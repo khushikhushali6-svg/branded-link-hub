@@ -7,7 +7,7 @@ from flask import Blueprint, current_app, jsonify, redirect, request, send_file
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import func, or_
 
-from app.extensions import db
+from app.extensions import db, limiter
 from app.models import ClickEvent, Link
 from app.utils.slug import generate_short_code
 
@@ -39,6 +39,7 @@ def validate_custom_slug(slug):
 
 @links_bp.post("")
 @jwt_required()
+@limiter.limit("10 per minute")
 def create_link():
     data = request.get_json(silent=True) or {}
 

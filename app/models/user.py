@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -47,6 +47,17 @@ class User(db.Model):
         "SocialLink",
         back_populates="user",
         cascade="all, delete-orphan"
+    )
+
+
+    reset_token = db.Column(
+        db.String(200),
+        nullable=True
+    )
+
+    reset_token_expiry = db.Column(
+        db.DateTime,
+        nullable=True
     )
 
     def set_password(self, password):

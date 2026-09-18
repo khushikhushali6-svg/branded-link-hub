@@ -7,7 +7,7 @@ from app.models import Link
 CHARACTERS = string.ascii_letters + string.digits
 
 
-def generate_short_code(length=7):
+def generate_short_code(length=6):
     while True:
         code = "".join(
             secrets.choice(CHARACTERS)

@@ -1,24 +1,18 @@
-async function loadLinks(){
-
-    const token = localStorage.getItem("access_token");
+async function loadLinks() {
 
     const response = await fetch(
         "/api/links",
         {
-            headers:{
-                "Authorization":
-                "Bearer " + token
-            }
+            credentials: "include"
         }
     );
 
     const data = await response.json();
 
     const container =
-    document.getElementById("links");
+        document.getElementById("links");
 
-
-    if(data.links){
+    if (response.ok && data.links) {
 
         container.innerHTML = "";
 
@@ -27,21 +21,33 @@ async function loadLinks(){
             container.innerHTML += `
                 <div>
                     <h4>${link.title || "Untitled"}</h4>
+
                     <p>${link.original_url}</p>
+
                     <p>
-                    Short URL:
-                    ${link.short_url || link.slug}
+                        Short URL:
+                        <a href="${link.short_url || "/" + link.slug}" target="_blank">
+                            ${link.short_url || link.slug}
+                        </a>
+                    </p>
+
+                    <p>
+                        Status:
+                        ${link.is_active ? "Active" : "Inactive"}
                     </p>
                 </div>
+
                 <hr>
             `;
 
         });
 
     }
-    else{
+    else {
+
         container.innerHTML =
-        "No links found.";
+            data.error || "No links found.";
+
     }
 
 }
@@ -49,52 +55,67 @@ async function loadLinks(){
 
 loadLinks();
 
+
 document
-.getElementById("createLinkForm")
-.addEventListener(
-"submit",
-async function(e){
+    .getElementById("createLinkForm")
+    .addEventListener(
+        "submit",
+        async function(e) {
 
-    e.preventDefault();
+            e.preventDefault();
+
+            const response = await fetch(
+                "/api/links",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    credentials: "include",
+
+                    body: JSON.stringify({
+
+                        title:
+                            document
+                                .getElementById("title")
+                                .value,
+
+                        original_url:
+                            document
+                                .getElementById("original_url")
+                                .value,
+
+                        custom_slug:
+                            document
+                                .getElementById("custom_slug")
+                                .value
+                                .trim() || null
+
+                    })
+                }
+            );
 
 
-    const response = await fetch(
-        "/api/links",
-        {
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json",
-                "Authorization":
-                "Bearer " + localStorage.getItem("access_token")
-            },
-            body:JSON.stringify({
+            const data = await response.json();
 
-                title:
-                document.getElementById("title").value,
 
-                original_url:
-                document.getElementById("original_url").value,
+            document
+                .getElementById("createMessage")
+                .innerText =
+                data.message || data.error;
 
-                custom_slug:
-                document.getElementById("custom_slug").value || null
 
-            })
+            if (response.ok) {
+
+                document
+                    .getElementById("createLinkForm")
+                    .reset();
+
+                loadLinks();
+
+            }
+
         }
     );
-
-
-    const data = await response.json();
-
-
-    document.getElementById("createMessage")
-    .innerText =
-    data.message || data.error;
-
-
-    if(response.ok){
-
-        loadLinks();
-
-    }
-
-});

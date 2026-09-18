@@ -6,7 +6,7 @@ from app.extensions import db
 from app.models import ClickEvent, Link
 
 
-public_bp = Blueprint("public", __name__)
+public_bp = Blueprint("public_redirect", __name__)
 
 
 @public_bp.get("/<slug>")

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, app
 
 from .config import Config
 from .extensions import db, jwt, limiter
@@ -7,7 +7,8 @@ from .routes.auth import auth_bp
 from .routes.links import links_bp
 from .routes.profile import profile_bp
 from .routes.social import social_bp
-from .routes.public_bio import public_bp
+from .routes.public import public_bp as public_redirect_bp
+from .routes.public_bio import public_bp as public_bio_bp
 from .routes.pages import pages_bp
 
 
@@ -23,7 +24,8 @@ def create_app():
     app.register_blueprint(links_bp)
     app.register_blueprint(profile_bp)
     app.register_blueprint(social_bp)
-    app.register_blueprint(public_bp)
+    app.register_blueprint(public_redirect_bp)
+    app.register_blueprint(public_bio_bp)
     app.register_blueprint(pages_bp)
 
     with app.app_context():

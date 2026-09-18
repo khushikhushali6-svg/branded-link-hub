@@ -25,17 +25,12 @@ async function(e){
 
 
     const data = await response.json();
+    console.log("LOGIN RESPONSE:", data);
 
 
     if(response.ok){ 
 
-        console.log("TOKEN:", data.access_token);
-        
-        localStorage.setItem(
-            "access_token",
-            data.access_token
-        );
-
+        console.log("LOGIN RESPONSE:", data);
         window.location.href = "/dashboard";
 
     }

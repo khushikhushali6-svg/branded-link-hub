@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - Branded Link Hub</title>
+</head>
+
+<body>
+
+<h1>Dashboard</h1>
+
+<h3>Your Short Links</h3>
+
+<h3>Create New Link</h3>
+
+<form id="createLinkForm">
+
+<input 
+type="text"
+id="title"
+placeholder="Title">
+
+<br><br>
+
+<input 
+type="text"
+id="original_url"
+placeholder="Original URL"
+required>
+
+<br><br>
+
+<input 
+type="text"
+id="custom_slug"
+placeholder="Custom Slug">
+
+<br><br>
+
+<button type="submit">
+Create Link
+</button>
+
+</form>
+
+<p id="createMessage"></p>
+
+<div id="links">
+    Loading...
+</div>
+
+
+<button id="logout">
+    Logout
+</button>
+
+
+<script src="/static/js/dashboard.js"></script>
+
+</body>
+</html>

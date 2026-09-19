@@ -10,6 +10,25 @@
 
 <h3>Your Short Links</h3>
 
+<div>
+
+    <input
+        type="text"
+        id="search"
+        placeholder="Search links..."
+    >
+
+    <button
+        id="searchButton"
+        type="button"
+    >
+        Search
+    </button>
+
+</div>
+
+<br>
+
 <h3>Create New Link</h3>
 
 <form id="createLinkForm">
@@ -46,6 +65,46 @@ Create Link
 
 <div id="links">
     Loading...
+</div>
+
+<div id="pagination">
+
+    <button
+        id="previousPage"
+        type="button"
+    >
+        Previous
+    </button>
+
+    <span id="pageInfo">
+        Page 1
+    </span>
+
+    <button
+        id="nextPage"
+        type="button"
+    >
+        Next
+    </button>
+
+</div>
+
+<div id="analytics" style="display:none;">
+
+    <h3>Link Analytics</h3>
+
+    <p id="totalClicks"></p>
+    <p id="uniqueVisitors"></p>
+
+    <h4>Device Distribution</h4>
+    <div id="devices"></div>
+
+    <h4>Top Referrers</h4>
+    <div id="referrers"></div>
+
+    <h4>Clicks Over Time</h4>
+    <div id="clicksOverTime"></div>
+
 </div>
 
 

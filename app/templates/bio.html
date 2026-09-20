@@ -1,206 +1,384 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ profile.display_name }} - Bio</title>
+    <title>{{ profile.display_name }} - LinkHub</title>
 
     <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            color: #222;
+            min-height: 100vh;
+            font-family: Inter, Arial, sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .bio-page {
+            min-height: 100vh;
+            padding: 35px 16px 50px;
+            display: flex;
+            justify-content: center;
         }
 
         .bio-container {
             width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
-            min-height: 100vh;
-            padding: 40px 20px;
+            max-width: 560px;
+            padding: 34px 26px 30px;
             text-align: center;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: 0 25px 70px rgba(15, 23, 42, 0.12);
         }
 
+        /* PROFILE */
+
         .avatar {
-            width: 100px;
-            height: 100px;
+            width: 112px;
+            height: 112px;
             border-radius: 50%;
             object-fit: cover;
-            margin-bottom: 15px;
+            margin: 0 auto 18px;
+            display: block;
+            border: 4px solid white;
+            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.15);
         }
 
         .avatar-placeholder {
-            width: 100px;
-            height: 100px;
+            width: 112px;
+            height: 112px;
             border-radius: 50%;
-            background: #ddd;
+            margin: 0 auto 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 15px;
+            background: #6366f1;
+            color: white;
             font-size: 40px;
+            font-weight: 800;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.25);
         }
 
         h1 {
-            margin: 10px 0;
+            margin: 0 0 9px;
+            font-size: 30px;
+            line-height: 1.2;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
         .bio {
-            margin: 10px 0 25px;
-            color: #555;
+            max-width: 430px;
+            margin: 0 auto 25px;
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.7;
         }
+
+        /* SOCIAL LINKS */
 
         .social-links {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 25px;
+            gap: 10px;
+            margin-bottom: 24px;
         }
 
         .social-links a {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             width: 100%;
-            padding: 16px;
+            min-height: 48px;
+            padding: 13px 18px;
             text-decoration: none;
-            border-radius: 10px;
-            background: #222;
+            border-radius: 12px;
+            background: #0f172a;
             color: white;
             border: 1px solid transparent;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .social-links a:hover {
+            transform: translateY(-2px);
+            background: #1e293b;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
+        }
+
+        /* MAIN LINKS */
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .link-button {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             width: 100%;
-            padding: 16px;
-            margin: 12px 0;
+            min-height: 54px;
+            padding: 15px 18px;
+            margin: 0;
             background: white;
-            color: #222;
+            color: #1e293b;
             text-decoration: none;
-            border-radius: 10px;
-            border: 1px solid #ddd;
+            border-radius: 13px;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.2s ease;
+            box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
         }
 
         .link-button:hover {
-            background: #eee;
+            transform: translateY(-2px);
+            border-color: #c7d2fe;
+            background: #f8fafc;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
         }
 
+        /* BRAND FOOTER */
+
+        .brand-footer {
+            margin-top: 28px;
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .brand-link {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .brand-link:hover {
+            color: #6366f1;
+        }
+
+        /* MINIMAL LIGHT */
+
         .theme-minimal-light {
-    background: #f5f5f5;
-    color: #222;
-}
+            background: #f1f5f9;
+            color: #0f172a;
+        }
 
-.theme-dark-slate {
-    background: #1e293b;
-    color: #f8fafc;
-}
+        .theme-minimal-light .bio-container {
+            background: rgba(255, 255, 255, 0.96);
+        }
 
-.theme-dark-slate .bio {
-    color: #cbd5e1;
-}
+        /* DARK SLATE */
 
-.theme-dark-slate .link-button {
-    background: #334155;
-    color: #f8fafc;
-    border-color: #475569;
-}
+        .theme-dark-slate {
+            background: #0f172a;
+            color: #f8fafc;
+        }
 
-.theme-dark-slate .link-button:hover {
-    background: #475569;
-}
+        .theme-dark-slate .bio-container {
+            background: #1e293b;
+            border-color: #334155;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+        }
 
-.theme-dark-slate .social-links a {
-    background: #0f172a;
-}
+        .theme-dark-slate .bio {
+            color: #cbd5e1;
+        }
 
-.theme-gradient {
-    background: linear-gradient(
-        135deg,
-        #667eea,
-        #764ba2
-    );
-    color: white;
-}
+        .theme-dark-slate .link-button {
+            background: #334155;
+            color: #f8fafc;
+            border-color: #475569;
+        }
 
-.theme-gradient .bio {
-    color: #f1f5f9;
-}
+        .theme-dark-slate .link-button:hover {
+            background: #475569;
+        }
 
-.theme-gradient .link-button {
-    background: rgba(255, 255, 255, 0.9);
-    color: #222;
-    border: none;
-}
+        .theme-dark-slate .social-links a {
+            background: #0f172a;
+            border-color: #334155;
+        }
 
-.theme-gradient .social-links a {
-    background: rgba(0, 0, 0, 0.7);
-}        
+        .theme-dark-slate .social-links a:hover {
+            background: #020617;
+        }
 
+        .theme-dark-slate .brand-footer {
+            color: #94a3b8;
+        }
 
+        /* GRADIENT */
+
+        .theme-gradient {
+            background:
+                linear-gradient(135deg,
+                    #6366f1,
+                    #7c3aed,
+                    #a855f7);
+            color: white;
+        }
+
+        .theme-gradient .bio-container {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(14px);
+            box-shadow: 0 25px 70px rgba(30, 27, 75, 0.3);
+        }
+
+        .theme-gradient .bio {
+            color: #f1f5f9;
+        }
+
+        .theme-gradient .link-button {
+            background: rgba(255, 255, 255, 0.94);
+            color: #1e293b;
+            border: none;
+        }
+
+        .theme-gradient .link-button:hover {
+            background: white;
+        }
+
+        .theme-gradient .social-links a {
+            background: rgba(15, 23, 42, 0.72);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .theme-gradient .social-links a:hover {
+            background: rgba(15, 23, 42, 0.88);
+        }
+
+        .theme-gradient .brand-footer {
+            color: #e2e8f0;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 600px) {
+
+            .bio-page {
+                padding: 15px 10px 30px;
+            }
+
+            .bio-container {
+                padding: 30px 18px 25px;
+                border-radius: 22px;
+            }
+
+            .avatar,
+            .avatar-placeholder {
+                width: 96px;
+                height: 96px;
+            }
+
+            .avatar-placeholder {
+                font-size: 34px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .bio {
+                font-size: 14px;
+            }
+
+        }
     </style>
+
 </head>
 
 <body class="theme-{{ profile.theme }}">
 
-<div class="bio-container">
+    <div class="bio-page">
 
-    {% if profile.avatar_url %}
-        <img
-            src="{{ profile.avatar_url }}"
-            alt="Profile Avatar"
-            class="avatar"
-        >
-    {% else %}
-        <div class="avatar-placeholder">
-            {{ profile.display_name[0] }}
+        <div class="bio-container">
+
+            {% if profile.avatar_url %}
+
+            <img src="{{ profile.avatar_url }}" alt="Profile Avatar" class="avatar">
+
+            {% else %}
+
+            <div class="avatar-placeholder">
+                {{ profile.display_name[0] }}
+            </div>
+
+            {% endif %}
+
+
+            <h1>
+                {{ profile.display_name }}
+            </h1>
+
+
+            {% if profile.bio %}
+
+            <p class="bio">
+                {{ profile.bio }}
+            </p>
+
+            {% endif %}
+
+
+            {% if social_links %}
+
+            <div class="social-links">
+
+                {% for social in social_links %}
+
+                <a href="{{ social.url }}" target="_blank" rel="noopener noreferrer">
+                    {{ social.platform }}
+                </a>
+
+                {% endfor %}
+
+            </div>
+
+            {% endif %}
+
+
+            <div class="links">
+
+                {% for link in links %}
+
+                <a class="link-button" href="{{ link.url }}">
+                    {{ link.title or "Visit Link" }}
+                </a>
+
+                {% endfor %}
+
+            </div>
+
+
+            <div class="brand-footer">
+                <a href="/" class="brand-link">
+                    ← Create your own LinkHub
+                </a>
+            </div>
         </div>
-    {% endif %}
-
-    <h1>{{ profile.display_name }}</h1>
-
-    {% if profile.bio %}
-        <p class="bio">
-            {{ profile.bio }}
-        </p>
-    {% endif %}
-
-    <div class="social-links">
-
-        {% for social in social_links %}
-
-            <a
-                href="{{ social.url }}"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                {{ social.platform }}
-            </a>
-
-        {% endfor %}
 
     </div>
-
-    <div class="links">
-
-        {% for link in links %}
-
-            <a
-                class="link-button"
-                href="{{ link.url }}"
-            >
-                {{ link.title or "Visit Link" }}
-            </a>
-
-        {% endfor %}
-
-    </div>
-
-</div>
 
 </body>
+
 </html>

@@ -1,7 +1,12 @@
-function getCsrfToken() {
+function getCsrfToken(type = "access") {
+    const cookieName =
+        type === "refresh"
+            ? "csrf_refresh_token"
+            : "csrf_access_token";
+
     const cookie = document.cookie
         .split("; ")
-        .find(row => row.startsWith("csrf_access_token="));
+        .find(row => row.startsWith(cookieName + "="));
 
     return cookie ? cookie.split("=")[1] : "";
 }
@@ -14,16 +19,7 @@ async function loadLinks(search = "", page = 1) {
         "/api/links?search=" +
         encodeURIComponent(search) +
         "&page=" +
-        page,
-        {
-            headers: {
-                "Authorization":
-                    "Bearer " +
-                    localStorage.getItem(
-                        "access_token"
-                    )
-            }
-        }
+        page
     );
 
     const data = await response.json();
@@ -262,12 +258,7 @@ async function(e){
             headers:{
 
                 "Content-Type":
-                "application/json",
-
-                "Authorization":
-                "Bearer " +
-                localStorage.getItem("access_token"),
-
+                    "application/json",
                 "X-CSRF-TOKEN": getCsrfToken()
             },
 
@@ -376,10 +367,7 @@ async function deleteLink(id){
 
             headers:{
 
-                "Authorization":
-                "Bearer " +
-                localStorage.getItem("access_token"),
-
+    
                 "X-CSRF-TOKEN":getCsrfToken()
 
             }
@@ -414,10 +402,9 @@ async function viewAnalytics(id){
     const response = await fetch(
         `/api/links/${id}/analytics`,
         {
-            headers:{
-                "Authorization":
-                "Bearer " +
-                localStorage.getItem("access_token")
+            headers: {
+                "X-CSRF-TOKEN":
+                    getCsrfToken()
             }
         }
     );
@@ -622,14 +609,7 @@ document
 
         const profileResponse =
             await fetch(
-                "/api/profile",
-                {
-                    headers:{
-                        "Authorization":
-                        "Bearer " +
-                        localStorage.getItem("access_token")
-                    }
-                }
+                "/api/profile"
             );
 
         const profileData =
@@ -687,14 +667,7 @@ document
 async function loadProfile() {
 
     const response = await fetch(
-        "/api/profile",
-        {
-            headers: {
-                "Authorization":
-                    "Bearer " +
-                    localStorage.getItem("access_token")
-            }
-        }
+        "/api/profile"
     );
 
     const data = await response.json();
@@ -737,35 +710,23 @@ document
             .value
             .trim();
 
+        let avatarUrl = null;
+        let theme = "default";
+
         const profileResponse =
-            await fetch(
-                "/api/profile",
-                {
-                    headers: {
-                        "Authorization":
-                            "Bearer " +
-                            localStorage.getItem("access_token"),
-                        "X-CSRF-TOKEN":
-                            getCsrfToken()
-                    }
-                }
-            );
+            await fetch("/api/profile");
 
-        const profileData =
-            await profileResponse.json();
+        if (profileResponse.ok) {
 
-        if (!profileResponse.ok) {
-            document
-            .getElementById("profileMessage")
-            .innerText =
-                profileData.error ||
-                "Unable to load profile.";
+            const profileData =
+                await profileResponse.json();
 
-            return;
+            avatarUrl =
+                profileData.profile.avatar_url;
+
+            theme =
+                profileData.profile.theme;
         }
-
-        const profile =
-            profileData.profile;
 
         const response =
             await fetch(
@@ -777,9 +738,8 @@ document
                         "Content-Type":
                             "application/json",
 
-                        "Authorization":
-                            "Bearer " +
-                            localStorage.getItem("access_token")
+                        "X-CSRF-TOKEN":
+                            getCsrfToken()
                     },
 
                     body: JSON.stringify({
@@ -790,10 +750,10 @@ document
                             bio,
 
                         avatar_url:
-                            profile.avatar_url,
+                            avatarUrl,
 
                         theme:
-                            profile.theme
+                            theme
                     })
                 }
             );
@@ -808,7 +768,6 @@ document
             data.error;
     }
 );
-
 
 loadProfile();
 
@@ -872,14 +831,7 @@ document
 async function loadSocialLinks() {
 
     const response = await fetch(
-        "/api/social",
-        {
-            headers: {
-                "Authorization":
-                    "Bearer " +
-                    localStorage.getItem("access_token")
-            }
-        }
+        "/api/social"
     );
 
     const data = await response.json();
@@ -1152,15 +1104,80 @@ document
         await fetch(
             "/api/auth/logout",
             {
-                method: "POST"
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN":
+                        getCsrfToken()
+                }
             }
-        );
-
-        localStorage.removeItem(
-            "access_token"
         );
 
         window.location.href =
             "/login";
     }
 );
+
+// ===============================
+// Session Expiry Warning
+// ===============================
+
+const SESSION_DURATION = 15 * 60 * 1000;
+const WARNING_BEFORE = 2 * 60 * 1000;
+
+const sessionStartTime = Date.now();
+
+const sessionNotice = document.createElement("div");
+
+sessionNotice.style.position = "fixed";
+sessionNotice.style.top = "20px";
+sessionNotice.style.right = "20px";
+sessionNotice.style.zIndex = "9999";
+sessionNotice.style.padding = "14px 18px";
+sessionNotice.style.borderRadius = "10px";
+sessionNotice.style.background = "#fff7ed";
+sessionNotice.style.color = "#9a3412";
+sessionNotice.style.border = "1px solid #fed7aa";
+sessionNotice.style.boxShadow = "0 8px 25px rgba(0,0,0,0.12)";
+sessionNotice.style.fontSize = "13px";
+sessionNotice.style.fontWeight = "600";
+sessionNotice.style.display = "none";
+
+document.body.appendChild(sessionNotice);
+
+const sessionTimer = setInterval(() => {
+
+    const elapsed = Date.now() - sessionStartTime;
+    const remaining = SESSION_DURATION - elapsed;
+
+    if (
+        remaining <= WARNING_BEFORE &&
+        remaining > 0
+    ) {
+        const seconds = Math.ceil(remaining / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+
+        sessionNotice.style.display = "block";
+
+        sessionNotice.innerText =
+            `⚠️ Your session will expire in ${minutes}:${String(secs).padStart(2, "0")}. Please save your work.`;
+    }
+
+    if (remaining <= 0) {
+
+        clearInterval(sessionTimer);
+
+        sessionNotice.style.display = "block";
+        sessionNotice.style.background = "#fef2f2";
+        sessionNotice.style.color = "#b91c1c";
+        sessionNotice.style.borderColor = "#fecaca";
+
+        sessionNotice.innerText =
+            "🔒 Your session has expired. Please login again.";
+
+        setTimeout(() => {
+            window.location.href = "/login";
+        }, 1500);
+    }
+
+}, 1000);

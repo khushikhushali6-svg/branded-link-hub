@@ -1,4 +1,4 @@
-from flask import Flask, app
+from flask import Flask, app, render_template
 
 from .config import Config
 from .extensions import db, jwt, limiter
@@ -33,9 +33,6 @@ def create_app():
 
     @app.route("/")
     def home():
-        return {
-            "message": "Branded Short-Link & Bio-Link Hub API",
-            "status": "running"
-        }
+        return render_template("home.html")
 
     return app

@@ -1,4 +1,7 @@
 from flask import Blueprint, render_template
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
+from app.models import User
 
 
 pages_bp = Blueprint("pages", __name__)
@@ -15,12 +18,22 @@ def register_page():
 
 
 @pages_bp.get("/dashboard")
+@jwt_required()
 def dashboard_page():
-    return render_template("dashboard.html")
+
+    user_id = int(get_jwt_identity())
+    user = User.query.get(user_id)
+
+    return render_template(
+        "dashboard.html",
+        username=user.username
+    )
+
 
 @pages_bp.get("/forgot-password")
 def forgot_password_page():
     return render_template("forgot-password.html")
+
 
 @pages_bp.get("/reset-password/<token>")
 def reset_password_page(token):

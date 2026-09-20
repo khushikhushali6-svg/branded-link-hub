@@ -1,9 +1,543 @@
 <!DOCTYPE html>
-<html>
-    <head>
-    <title>Dashboard - Branded Link Hub</title>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - LinkHub</title>
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --muted: #64748b;
+            --sidebar: #111827;
+        }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: var(--sidebar);
+            color: white;
+            padding: 25px 18px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            padding: 0 12px 28px;
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+        }
+
+        .brand span {
+            color: #818cf8;
+        }
+
+        .sidebar-title {
+            padding: 0 12px;
+            margin-bottom: 10px;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .sidebar-link {
+            border: none;
+            background: transparent;
+            color: #cbd5e1;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: #1f2937;
+            color: white;
+        }
+
+        .sidebar-link.active {
+            box-shadow: inset 3px 0 0 #818cf8;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        #logout {
+            width: 100%;
+            border: none;
+            background: #1f2937;
+            color: #cbd5e1;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        #logout:hover {
+            background: #374151;
+            color: white;
+        }
+
+        /* MAIN */
+
+        .main {
+            width: calc(100% - 250px);
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 76px;
+            padding: 0 34px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .topbar h1 {
+            font-size: 22px;
+            font-weight: 750;
+        }
+
+        .topbar-subtitle {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .status-badge {
+            padding: 8px 13px;
+            border-radius: 999px;
+            background: #ecfdf5;
+            color: #047857;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .public-profile-button {
+            padding: 9px 14px;
+            border-radius: 9px;
+            background: #6366f1;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .public-profile-button:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+        }
+
+        .content {
+            padding: 30px 34px 50px;
+            max-width: 1450px;
+        }
+
+        /* OVERVIEW */
+
+        .welcome-card {
+            padding: 28px;
+            margin-bottom: 24px;
+            border-radius: 18px;
+            background: linear-gradient(135deg,
+                    #6366f1,
+                    #4f46e5);
+            color: white;
+            box-shadow: 0 15px 35px rgba(79, 70, 229, 0.18);
+        }
+
+        .welcome-card h2 {
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .welcome-card p {
+            color: #e0e7ff;
+            font-size: 14px;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .overview-card {
+            padding: 22px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+        }
+
+        .overview-label {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .overview-value {
+            font-size: 27px;
+            font-weight: 800;
+        }
+
+        /* SECTIONS */
+
+        .section {
+            margin-bottom: 28px;
+            padding: 25px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+        }
+
+        .section-header {
+            margin-bottom: 22px;
+        }
+
+        .section-header h2 {
+            font-size: 19px;
+            margin-bottom: 5px;
+        }
+
+        .section-header p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* SEARCH */
+
+        .search-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #search {
+            flex: 1;
+            min-width: 0;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        #search:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        #searchButton {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        #searchButton:hover {
+            background: var(--primary-dark);
+        }
+
+        /* FORM */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .form-input,
+        .form-textarea,
+        #displayName,
+        #bio,
+        #socialPlatform,
+        #socialUrl,
+        #title,
+        #original_url,
+        #custom_slug,
+        #theme {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            outline: none;
+            background: white;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        #bio {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        #displayName:focus,
+        #bio:focus,
+        #socialPlatform:focus,
+        #socialUrl:focus,
+        #title:focus,
+        #original_url:focus,
+        #custom_slug:focus,
+        #theme:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* BUTTONS */
+
+        .primary-button,
+        #uploadAvatar,
+        #saveProfile,
+        #addSocialLink,
+        #saveTheme,
+        #createLinkForm button {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .primary-button:hover,
+        #uploadAvatar:hover,
+        #saveProfile:hover,
+        #addSocialLink:hover,
+        #saveTheme:hover,
+        #createLinkForm button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        /* PROFILE */
+
+        .avatar-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 18px;
+            margin-bottom: 22px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .avatar-placeholder {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #e0e7ff;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+
+        #avatar {
+            max-width: 100%;
+            margin-bottom: 10px;
+        }
+
+        /* SOCIAL */
+
+        .social-form {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr auto;
+            gap: 10px;
+            align-items: end;
+            margin-bottom: 20px;
+        }
+
+        #socialLinks {
+            display: grid;
+            gap: 10px;
+        }
+
+        /* THEME */
+
+        .theme-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        #theme {
+            max-width: 260px;
+        }
+
+        /* LINKS */
+
+        #links {
+            display: block;
+            overflow-x: auto;
+            width: 100%;
+            padding-bottom: 6px;
+        }
+
+        .link-item {
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #ffffff;
+        }
+
+        .link-item:hover {
+            border-color: #c7d2fe;
+        }
+
+        /* PAGINATION */
+
+        #pagination {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        #previousPage,
+        #nextPage {
+            padding: 9px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            background: white;
+            color: #334155;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        #previousPage:hover,
+        #nextPage:hover {
+            background: #f8fafc;
+        }
+
+        #pageInfo {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* ANALYTICS */
+
+        #analytics {
+            margin-top: 0;
+        }
+
+        #analytics-section:has(#analytics[style*="display:none"]) {
+            display: none;
+        }
+
+        .analytics-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .analytics-stat {
+            padding: 18px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .analytics-stat-label {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .analytics-stat-value {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
         .analytics-chart {
             margin: 15px 0;
         }
@@ -14,7 +548,8 @@
 
         .analytics-label {
             margin-bottom: 5px;
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 13px;
         }
 
         .analytics-bar-container {
@@ -34,229 +569,767 @@
 
         .analytics-value {
             margin-top: 3px;
-            font-size: 14px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* MESSAGES */
+
+        #avatarMessage,
+        #profileMessage,
+        #socialMessage,
+        #themeMessage,
+        #createMessage {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+
+        /* DYNAMIC LINK TABLE */
+
+        #links table {
+            width: 100%;
+            min-width: 900px;
+            table-layout: auto;
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 13px;
+        }
+
+        #links th {
+            padding: 13px 12px;
+            background: #f8fafc;
+            color: #475569;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border);
+        }
+
+        #links td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #eef2f7;
+            color: #334155;
+            vertical-align: middle;
+        }
+
+        #links tr:last-child td {
+            border-bottom: none;
+        }
+
+        #links tr:hover td {
+            background: #fafbff;
+        }
+
+        #links a {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        #links a:hover {
+            text-decoration: underline;
+        }
+
+        #links button {
+            border: 1px solid #cbd5e1;
+            background: white;
+            color: #334155;
+            padding: 6px 9px;
+            margin: 2px;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        #links button:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
+
+
+        /* DYNAMIC SOCIAL LINKS */
+
+        #socialLinks {
+            margin-top: 15px;
+        }
+
+        #socialLinks>div {
+            padding: 16px;
+            margin-bottom: 10px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        #socialLinks input[type="text"],
+        #socialLinks input[type="url"] {
+            width: calc(50% - 8px);
+            padding: 10px 12px;
+            margin-right: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            outline: none;
+            font-size: 13px;
+        }
+
+        #socialLinks input[type="text"]:focus,
+        #socialLinks input[type="url"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        #socialLinks input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin: 12px 8px 12px 0;
+            accent-color: var(--primary);
+            cursor: pointer;
+            vertical-align: middle;
+        }
+
+        #socialLinks button {
+            border: none;
+            padding: 8px 12px;
+            margin-right: 7px;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        #socialLinks button:hover {
+            background: var(--primary-dark);
+        }
+
+        #socialLinks button:last-of-type {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        #socialLinks button:last-of-type:hover {
+            background: #fecaca;
+        }
+
+        #socialLinks hr {
+            border: none;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 15px;
+        }
+
+
+        /* MOBILE */
+
+        @media (max-width: 950px) {
+
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                width: calc(100% - 210px);
+                margin-left: 210px;
+            }
+
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .social-form {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .app {
+                display: block;
+            }
+
+            .sidebar {
+                position: static;
+                width: 100%;
+                min-height: auto;
+                padding: 15px;
+            }
+
+            .brand {
+                display: block;
+                padding-bottom: 15px;
+            }
+
+            .sidebar-nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .sidebar-bottom {
+                margin-top: 12px;
+            }
+
+            .main {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .topbar {
+                padding: 18px 20px;
+                height: auto;
+            }
+
+            .content {
+                padding: 20px 15px 35px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .search-row {
+                flex-direction: column;
+            }
+
+            .theme-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #theme {
+                max-width: none;
+            }
+
+            .analytics-summary {
+                grid-template-columns: 1fr;
+            }
+
+
+            .topbar-actions {
+                flex-wrap: wrap;
+                justify-content: flex-end;
+            }
+
+            .public-profile-button {
+                font-size: 12px;
+            }
+
+
         }
     </style>
-    </head>
+
+</head>
+
 <body>
 
-<h1>Dashboard</h1>
+    <div class="app">
 
-<h3>Your Short Links</h3>
+        <!-- SIDEBAR -->
 
-<div>
+        <aside class="sidebar">
 
-    <input
-        type="text"
-        id="search"
-        placeholder="Search links..."
-    >
+            <a href="/" class="brand">
+                Link<span>Hub</span>
+            </a>
 
-    <button
-        id="searchButton"
-        type="button"
-    >
-        Search
-    </button>
+            <div class="sidebar-title">
+                Workspace
+            </div>
 
-</div>
+            <nav class="sidebar-nav">
 
-<br>
+                <a href="#links-section" class="sidebar-link active">
+                    🔗 Links
+                </a>
 
+                <a href="#profile-section" class="sidebar-link">
+                    👤 Profile
+                </a>
 
-<h3>Profile Customization</h3>
+                <a href="#social-section" class="sidebar-link">
+                    🌐 Social Links
+                </a>
 
-<label for="avatar">
-    Profile Avatar
-</label>
+                <a href="#theme-section" class="sidebar-link">
+                    🎨 Theme
+                </a>
 
-<br>
+                <a href="#analytics-section" class="sidebar-link">
+                    📊 Analytics
+                </a>
 
-<input
-    type="file"
-    id="avatar"
-    accept=".png,.jpg,.jpeg,.webp"
->
+            </nav>
 
-<br><br>
+            <div class="sidebar-bottom">
 
-<button
-    id="uploadAvatar"
-    type="button"
->
-    Upload Avatar
-</button>
+                <button id="logout">
+                    Logout
+                </button>
 
-<p id="avatarMessage"></p>
+            </div>
 
-<br>
+        </aside>
 
 
-<input
-    type="text"
-    id="displayName"
-    placeholder="Display Name"
->
+        <!-- MAIN -->
 
-<br><br>
+        <main class="main">
 
-<textarea
-    id="bio"
-    placeholder="Bio"
-    rows="4"
-    cols="40"
-></textarea>
+            <header class="topbar">
 
-<br><br>
+                <div>
+                    <h1>Dashboard</h1>
 
-<button
-    id="saveProfile"
-    type="button"
->
-    Save Profile
-</button>
+                    <p class="topbar-subtitle">
+                        Manage your links, profile and analytics.
+                    </p>
+                </div>
 
-<p id="profileMessage"></p>
+                <div class="topbar-actions">
 
-<br>
+                    <a href="/bio/{{ username }}" target="_blank" class="public-profile-button">
+                        👁 View Public Profile
+                    </a>
 
+                    <div class="status-badge">
+                        ● Account Active
+                    </div>
 
-<h3>Social Links</h3>
+                </div>
 
-<input
-    type="text"
-    id="socialPlatform"
-    placeholder="Platform (e.g. Instagram)"
->
+            </header>
 
-<br><br>
 
-<input
-    type="url"
-    id="socialUrl"
-    placeholder="Social URL"
->
+            <div class="content">
 
-<br><br>
 
-<button
-    id="addSocialLink"
-    type="button"
->
-    Add Social Link
-</button>
+                <!-- WELCOME -->
 
-<p id="socialMessage"></p>
+                <section class="welcome-card">
 
-<div id="socialLinks">
-    Loading...
-</div>
+                    <h2>Welcome to LinkHub</h2>
 
-<br>
+                    <p>
+                        Manage your digital presence from one place.
+                        Create short links, customize your profile and
+                        track link performance.
+                    </p>
 
-<h3>Bio Profile Theme</h3>
+                </section>
 
-<select id="theme">
-    <option value="minimal-light">Minimal Light</option>
-    <option value="dark-slate">Dark Slate</option>
-    <option value="gradient">Gradient</option>
-</select>
 
-<button
-    id="saveTheme"
-    type="button"
->
-    Save Theme
-</button>
+                <!-- OVERVIEW -->
 
-<p id="themeMessage"></p>
+                <div class="overview-grid">
 
+                    <div class="overview-card">
 
-<h3>Create New Link</h3>
+                        <div class="overview-label">
+                            Workspace
+                        </div>
 
-<form id="createLinkForm">
+                        <div class="overview-value">
+                            Link Management
+                        </div>
 
-<input 
-type="text"
-id="title"
-placeholder="Title">
+                    </div>
 
-<br><br>
 
-<input 
-type="text"
-id="original_url"
-placeholder="Original URL"
-required>
+                    <div class="overview-card">
 
-<br><br>
+                        <div class="overview-label">
+                            Profile
+                        </div>
 
-<input 
-type="text"
-id="custom_slug"
-placeholder="Custom Slug">
+                        <div class="overview-value">
+                            Customizable
+                        </div>
 
-<br><br>
+                    </div>
 
-<button type="submit">
-Create Link
-</button>
 
-</form>
+                    <div class="overview-card">
 
-<p id="createMessage"></p>
+                        <div class="overview-label">
+                            Analytics
+                        </div>
 
-<div id="links">
-    Loading...
-</div>
+                        <div class="overview-value">
+                            Real-time Data
+                        </div>
 
-<div id="pagination">
+                    </div>
 
-    <button
-        id="previousPage"
-        type="button"
-    >
-        Previous
-    </button>
+                </div>
 
-    <span id="pageInfo">
-        Page 1
-    </span>
 
-    <button
-        id="nextPage"
-        type="button"
-    >
-        Next
-    </button>
+                <!-- LINKS -->
 
-</div>
+                <section class="section" id="links-section">
 
-<div id="analytics" style="display:none;">
+                    <div class="section-header">
 
-    <h3>Link Analytics</h3>
+                        <h2>Your Short Links</h2>
 
-    <p id="totalClicks"></p>
-    <p id="uniqueVisitors"></p>
+                        <p>
+                            Search and manage your branded short URLs.
+                        </p>
 
-    <h4>Device Distribution</h4>
-    <div id="devices"></div>
+                    </div>
 
-    <h4>Top Referrers</h4>
-    <div id="referrers"></div>
 
-    <h4>Clicks Over Time</h4>
-    <div id="clicksOverTime"></div>
+                    <div class="search-row">
 
-</div>
+                        <input type="text" id="search" placeholder="Search links...">
 
+                        <button id="searchButton" type="button">
+                            Search
+                        </button>
 
-<button id="logout">
-    Logout
-</button>
+                    </div>
 
 
-<script src="/static/js/dashboard.js"></script>
+                    <div id="links">
+                        Loading...
+                    </div>
+
+
+                    <div id="pagination">
+
+                        <button id="previousPage" type="button">
+                            Previous
+                        </button>
+
+                        <span id="pageInfo">
+                            Page 1
+                        </span>
+
+                        <button id="nextPage" type="button">
+                            Next
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- CREATE LINK -->
+
+                <section class="section">
+
+                    <div class="section-header">
+
+                        <h2>Create New Link</h2>
+
+                        <p>
+                            Turn any long URL into a branded short link.
+                        </p>
+
+                    </div>
+
+
+                    <form id="createLinkForm">
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label for="title">
+                                    Link Title
+                                </label>
+
+                                <input type="text" id="title" placeholder="e.g. My Portfolio">
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="custom_slug">
+                                    Custom Slug
+                                </label>
+
+                                <input type="text" id="custom_slug" placeholder="e.g. portfolio">
+
+                            </div>
+
+
+                            <div class="form-group full">
+
+                                <label for="original_url">
+                                    Original URL
+                                </label>
+
+                                <input type="text" id="original_url" placeholder="https://example.com/your-page"
+                                    required>
+
+                            </div>
+
+                        </div>
+
+
+                        <button type="submit">
+                            Create Link
+                        </button>
+
+                    </form>
+
+
+                    <p id="createMessage"></p>
+
+                </section>
+
+
+                <!-- PROFILE -->
+
+                <section class="section" id="profile-section">
+
+                    <div class="section-header">
+
+                        <h2>Profile Customization</h2>
+
+                        <p>
+                            Customize how your public bio profile appears.
+                        </p>
+
+                    </div>
+
+
+                    <div class="avatar-section">
+
+                        <div class="avatar-placeholder">
+                            LH
+                        </div>
+
+                        <div>
+
+                            <label for="avatar" style="display:block;font-weight:700;font-size:13px;margin-bottom:8px;">
+                                Profile Avatar
+                            </label>
+
+                            <input type="file" id="avatar" accept=".png,.jpg,.jpeg,.webp">
+
+                            <br>
+
+                            <button id="uploadAvatar" type="button">
+                                Upload Avatar
+                            </button>
+
+                            <p id="avatarMessage"></p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group full">
+
+                            <label for="displayName">
+                                Display Name
+                            </label>
+
+                            <input type="text" id="displayName" placeholder="Your display name">
+
+                        </div>
+
+
+                        <div class="form-group full">
+
+                            <label for="bio">
+                                Bio
+                            </label>
+
+                            <textarea id="bio" placeholder="Tell visitors a little about yourself..."
+                                rows="4"></textarea>
+
+                        </div>
+
+                    </div>
+
+
+                    <button id="saveProfile" type="button">
+                        Save Profile
+                    </button>
+
+                    <p id="profileMessage"></p>
+
+                </section>
+
+
+                <!-- SOCIAL -->
+
+                <section class="section" id="social-section">
+
+                    <div class="section-header">
+
+                        <h2>Social Links</h2>
+
+                        <p>
+                            Add your social profiles to your public bio page.
+                        </p>
+
+                    </div>
+
+
+                    <div class="social-form">
+
+                        <input type="text" id="socialPlatform" placeholder="Platform (e.g. Instagram)">
+
+                        <input type="url" id="socialUrl" placeholder="https://instagram.com/username">
+
+                        <button id="addSocialLink" type="button">
+                            Add Social Link
+                        </button>
+
+                    </div>
+
+
+                    <p id="socialMessage"></p>
+
+
+                    <div id="socialLinks">
+                        Loading...
+                    </div>
+
+                </section>
+
+
+                <!-- THEME -->
+
+                <section class="section" id="theme-section">
+
+                    <div class="section-header">
+
+                        <h2>Bio Profile Theme</h2>
+
+                        <p>
+                            Choose the visual style of your public profile.
+                        </p>
+
+                    </div>
+
+
+                    <div class="theme-row">
+
+                        <select id="theme">
+
+                            <option value="minimal-light">
+                                Minimal Light
+                            </option>
+
+                            <option value="dark-slate">
+                                Dark Slate
+                            </option>
+
+                            <option value="gradient">
+                                Gradient
+                            </option>
+
+                        </select>
+
+
+                        <button id="saveTheme" type="button">
+                            Save Theme
+                        </button>
+
+                    </div>
+
+
+                    <p id="themeMessage"></p>
+
+                </section>
+
+
+                <!-- ANALYTICS -->
+
+                <section class="section" id="analytics-section">
+
+                    <div id="analytics" style="display:none;">
+
+                        <div class="section-header">
+
+                            <h2>Link Analytics</h2>
+
+                            <p>
+                                Understand how visitors interact with your links.
+                            </p>
+
+                        </div>
+
+
+                        <div class="analytics-summary">
+
+                            <div class="analytics-stat">
+
+                                <div class="analytics-stat-label">
+                                    Total Clicks
+                                </div>
+
+                                <div class="analytics-stat-value" id="totalClicks"></div>
+
+                            </div>
+
+
+                            <div class="analytics-stat">
+
+                                <div class="analytics-stat-label">
+                                    Unique Visitors
+                                </div>
+
+                                <div class="analytics-stat-value" id="uniqueVisitors"></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <h3 style="margin-bottom:12px;">
+                            Device Distribution
+                        </h3>
+
+                        <div id="devices"></div>
+
+
+                        <h3 style="margin:25px 0 12px;">
+                            Top Referrers
+                        </h3>
+
+                        <div id="referrers"></div>
+
+
+                        <h3 style="margin:25px 0 12px;">
+                            Clicks Over Time
+                        </h3>
+
+                        <div id="clicksOverTime"></div>
+
+                    </div>
+
+                </section>
+
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <script src="/static/js/dashboard.js"></script>
 
 </body>
+
 </html>

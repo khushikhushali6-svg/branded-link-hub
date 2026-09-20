@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LinkHub — Branded Links Made Simple</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 22px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 800;
+            color: #111827;
+            text-decoration: none;
+        }
+
+        .brand span {
+            color: #6366f1;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 11px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .btn-login {
+            color: #334155;
+        }
+
+        .btn-login:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-primary {
+            color: white;
+            background: #6366f1;
+        }
+
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+        }
+
+        .hero {
+            min-height: 620px;
+            padding: 90px 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 60px;
+        }
+
+        .hero-content {
+            max-width: 620px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4f46e5;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 {
+            font-size: clamp(42px, 6vw, 72px);
+            line-height: 1.05;
+            letter-spacing: -2px;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 span {
+            color: #6366f1;
+        }
+
+        .hero p {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #64748b;
+            max-width: 560px;
+            margin-bottom: 32px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .hero-buttons .btn {
+            padding: 14px 24px;
+        }
+
+        .preview {
+            width: 360px;
+            min-width: 300px;
+            padding: 28px;
+            border-radius: 24px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 25px 60px rgba(15, 23, 42, 0.12);
+        }
+
+        .preview-avatar {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #6366f1;
+            color: white;
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .preview h3 {
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .preview p {
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 22px;
+        }
+
+        .preview-link {
+            display: block;
+            padding: 14px;
+            margin-bottom: 12px;
+            text-align: center;
+            text-decoration: none;
+            color: #1e293b;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .features {
+            padding: 80px 7%;
+            background: white;
+        }
+
+        .section-heading {
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto 45px;
+        }
+
+        .section-heading h2 {
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+        .section-heading p {
+            color: #64748b;
+            line-height: 1.7;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .feature-card {
+            padding: 28px;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            background: #ffffff;
+        }
+
+        .feature-icon {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: #eef2ff;
+            color: #4f46e5;
+            font-weight: 800;
+            margin-bottom: 18px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: #64748b;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        footer {
+            padding: 30px 7%;
+            text-align: center;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        @media (max-width: 850px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 60px;
+            }
+
+            .hero p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .preview {
+                width: 100%;
+                max-width: 360px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .navbar {
+                padding: 18px 5%;
+            }
+
+            .brand {
+                font-size: 20px;
+            }
+
+            .btn {
+                padding: 9px 14px;
+            }
+
+            .hero {
+                padding-left: 5%;
+                padding-right: 5%;
+            }
+
+            .features {
+                padding-left: 5%;
+                padding-right: 5%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="brand">
+            Link<span>Hub</span>
+        </a>
+
+        <div class="nav-actions">
+            <a href="/login" class="btn btn-login">Login</a>
+            <a href="/register" class="btn btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    <main>
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <span class="badge">
+                    Branded Short-Link & Bio-Link Hub
+                </span>
+
+                <h1>
+                    One link for your
+                    <span>digital presence.</span>
+                </h1>
+
+                <p>
+                    Create branded short links, build your personal
+                    bio page, share social profiles, and understand
+                    your audience with simple link analytics.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="/register" class="btn btn-primary">
+                        Create Your Hub
+                    </a>
+
+                    <a href="/login" class="btn btn-login">
+                        Sign In
+                    </a>
+                </div>
+
+            </div>
+
+            <div class="preview">
+
+                <div class="preview-avatar">
+                    LH
+                </div>
+
+                <h3>Your Digital Profile</h3>
+
+                <p>
+                    All your important links in one place
+                </p>
+
+                <a href="#" class="preview-link">
+                    🌐 Portfolio
+                </a>
+
+                <a href="#" class="preview-link">
+                    💼 LinkedIn
+                </a>
+
+                <a href="#" class="preview-link">
+                    💻 GitHub
+                </a>
+
+                <a href="#" class="preview-link">
+                    📊 My Projects
+                </a>
+
+            </div>
+
+        </section>
+
+        <section class="features">
+
+            <div class="section-heading">
+                <h2>Everything you need</h2>
+
+                <p>
+                    Manage your links, profile, social presence and
+                    performance from one simple dashboard.
+                </p>
+            </div>
+
+            <div class="feature-grid">
+
+                <div class="feature-card">
+                    <div class="feature-icon">01</div>
+
+                    <h3>Branded Short Links</h3>
+
+                    <p>
+                        Create short URLs with custom slugs that
+                        are easy to share and remember.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">02</div>
+
+                    <h3>Bio-Link Profile</h3>
+
+                    <p>
+                        Build a professional public profile with
+                        your bio, avatar, social links and projects.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">03</div>
+
+                    <h3>Link Analytics</h3>
+
+                    <p>
+                        Track clicks, referrers and device information
+                        through your dashboard.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        © 2026 LinkHub. Branded links made simple.
+    </footer>
+
+</body>
+</html>

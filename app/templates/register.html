@@ -1,52 +1,345 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Register - Branded Link Hub</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account - LinkHub</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Inter, Arial, sans-serif;
+            background:
+                radial-gradient(
+                    circle at top right,
+                    #eef2ff 0%,
+                    #f8fafc 45%,
+                    #eef2ff 100%
+                );
+            color: #0f172a;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 22px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .brand {
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .brand span {
+            color: #6366f1;
+        }
+
+        .back-home {
+            text-decoration: none;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .back-home:hover {
+            color: #4f46e5;
+        }
+
+        .page {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 20px;
+        }
+
+        .register-card {
+            width: 100%;
+            max-width: 430px;
+            background: white;
+            padding: 42px;
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 25px 70px rgba(15, 23, 42, 0.12);
+        }
+
+        .logo-circle {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: #6366f1;
+            color: white;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .register-card h1 {
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 11px;
+            outline: none;
+            font-size: 14px;
+            transition: 0.2s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 4px;
+            border: none;
+            border-radius: 11px;
+            background: #6366f1;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .register-button:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+        }
+
+        #message {
+            min-height: 20px;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        #verification {
+            margin-top: 12px;
+            font-size: 13px;
+            line-height: 1.5;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .login-text {
+            margin-top: 26px;
+            padding-top: 22px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .login-text a {
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .login-text a:hover {
+            color: #4f46e5;
+        }
+
+        footer {
+            padding: 22px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 500px) {
+
+            .navbar {
+                padding: 18px 5%;
+            }
+
+            .brand {
+                font-size: 20px;
+            }
+
+            .page {
+                padding: 30px 16px;
+            }
+
+            .register-card {
+                padding: 30px 22px;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 <body>
 
-<h2>Create Account</h2>
+    <nav class="navbar">
 
-<form id="registerForm">
+        <a href="/" class="brand">
+            Link<span>Hub</span>
+        </a>
 
-    <input
-        type="text"
-        id="username"
-        placeholder="Username"
-        required
-    >
+        <a href="/" class="back-home">
+            ← Back to Home
+        </a>
 
-    <br><br>
+    </nav>
 
-    <input
-        type="email"
-        id="email"
-        placeholder="Email"
-        required
-    >
 
-    <br><br>
+    <main class="page">
 
-    <input
-        type="password"
-        id="password"
-        placeholder="Password"
-        required
-    >
+        <div class="register-card">
 
-    <br><br>
+            <div class="logo-circle">
+                LH
+            </div>
 
-    <button type="submit">
-        Register
-    </button>
+            <h1>Create your account</h1>
 
-</form>
+            <p class="subtitle">
+                Start building your branded link and bio profile.
+            </p>
 
-<p id="message"></p>
 
-<div id="verification"></div>
+            <form id="registerForm">
 
-<script src="/static/js/register.js"></script>
+                <div class="form-group">
+
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        placeholder="Choose a username"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter your email address"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Create a strong password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="register-button"
+                >
+                    Create Account
+                </button>
+
+            </form>
+
+
+            <p id="message"></p>
+
+            <div id="verification"></div>
+
+
+            <div class="login-text">
+
+                Already have an account?
+                <a href="/login">
+                    Sign in
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <footer>
+        © 2026 LinkHub. Branded links made simple.
+    </footer>
+
+
+    <script src="/static/js/register.js"></script>
 
 </body>
+
 </html>

@@ -107,7 +107,7 @@ def create_link():
             "slug": slug,
             "title": link.title,
             "is_active": link.is_active,
-            "short_url": f"/{slug}"
+            "short_url": f"/r/{slug}"
         }
     }), 201
 
@@ -370,7 +370,7 @@ def generate_qr_code(link_id):
 
     slug = link.get_slug()
 
-    short_url = request.host_url.rstrip("/") + f"/{slug}"
+    short_url = request.host_url.rstrip("/") + f"/r/{slug}"
 
     qr = qrcode.QRCode(
         version=1,

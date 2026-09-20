@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ profile.display_name }} - Bio</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        .bio-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        .avatar-placeholder {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 40px;
+        }
+
+        h1 {
+            margin: 10px 0;
+        }
+
+        .bio {
+            margin: 10px 0 25px;
+            color: #555;
+        }
+
+        .social-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .social-links a {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            text-decoration: none;
+            border-radius: 10px;
+            background: #222;
+            color: white;
+            border: 1px solid transparent;
+        }
+
+        .link-button {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            margin: 12px 0;
+            background: white;
+            color: #222;
+            text-decoration: none;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .link-button:hover {
+            background: #eee;
+        }
+
+        .theme-minimal-light {
+    background: #f5f5f5;
+    color: #222;
+}
+
+.theme-dark-slate {
+    background: #1e293b;
+    color: #f8fafc;
+}
+
+.theme-dark-slate .bio {
+    color: #cbd5e1;
+}
+
+.theme-dark-slate .link-button {
+    background: #334155;
+    color: #f8fafc;
+    border-color: #475569;
+}
+
+.theme-dark-slate .link-button:hover {
+    background: #475569;
+}
+
+.theme-dark-slate .social-links a {
+    background: #0f172a;
+}
+
+.theme-gradient {
+    background: linear-gradient(
+        135deg,
+        #667eea,
+        #764ba2
+    );
+    color: white;
+}
+
+.theme-gradient .bio {
+    color: #f1f5f9;
+}
+
+.theme-gradient .link-button {
+    background: rgba(255, 255, 255, 0.9);
+    color: #222;
+    border: none;
+}
+
+.theme-gradient .social-links a {
+    background: rgba(0, 0, 0, 0.7);
+}        
+
+
+    </style>
+</head>
+
+<body class="theme-{{ profile.theme }}">
+
+<div class="bio-container">
+
+    {% if profile.avatar_url %}
+        <img
+            src="{{ profile.avatar_url }}"
+            alt="Profile Avatar"
+            class="avatar"
+        >
+    {% else %}
+        <div class="avatar-placeholder">
+            {{ profile.display_name[0] }}
+        </div>
+    {% endif %}
+
+    <h1>{{ profile.display_name }}</h1>
+
+    {% if profile.bio %}
+        <p class="bio">
+            {{ profile.bio }}
+        </p>
+    {% endif %}
+
+    <div class="social-links">
+
+        {% for social in social_links %}
+
+            <a
+                href="{{ social.url }}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                {{ social.platform }}
+            </a>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="links">
+
+        {% for link in links %}
+
+            <a
+                class="link-button"
+                href="{{ link.url }}"
+            >
+                {{ link.title or "Visit Link" }}
+            </a>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -2,6 +2,7 @@ import re
 import secrets
 
 from datetime import datetime, timedelta
+from urllib import response
 
 from email_validator import (
     EmailNotValidError,
@@ -17,16 +18,19 @@ from flask import (
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
+    decode_token,
+    get_jwt,
     get_jwt_identity,
     jwt_required,
     set_access_cookies,
-    set_refresh_cookies
+    set_refresh_cookies,
+    unset_jwt_cookies
 )
 
 from sqlalchemy import or_
 
 from app.extensions import db
-from app.models import User
+from app.models import User, user
 
 
 auth_bp = Blueprint(
@@ -35,7 +39,7 @@ auth_bp = Blueprint(
     url_prefix="/api/auth"
 )
 
-
+active_refresh_tokens = {}
 
 def validate_password(password):
 
@@ -307,73 +311,39 @@ def login():
 
 
 
-
-
     access_token = create_access_token(
-
         identity=str(user.id)
-
     )
-
-
 
     refresh_token = create_refresh_token(
-
         identity=str(user.id)
-
     )
 
+    refresh_token_data = decode_token(
+    refresh_token
+    )
+
+    active_refresh_tokens[str(user.id)] = (
+        refresh_token_data["jti"]
+
+    )
 
 
 
     response = jsonify({
-
-        "message":
-        "Login successful.",
-
-
-        "access_token":
-        access_token,
-
-
-        "user":{
-
-            "id":user.id,
-
-            "username":user.username,
-
-            "email":user.email
-
+        "message": "Login successful.",
+        "access_token": access_token,
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email
         }
-
     })
 
+    set_access_cookies(response, access_token)
+    set_refresh_cookies(response, refresh_token)
 
-
-
-
-    set_access_cookies(
-
-        response,
-
-        access_token
-
-    )
-
-
-
-    set_refresh_cookies(
-
-        response,
-
-        refresh_token
-
-    )
-
-
-
-    return response,200
-
+    return response, 200
 
 
 
@@ -382,44 +352,57 @@ def login():
 @auth_bp.post("/refresh")
 @jwt_required(refresh=True)
 def refresh():
+    user_id = str(get_jwt_identity())
+    current_jti = get_jwt()["jti"]
 
-
-    user_id = get_jwt_identity()
-
-
+    if active_refresh_tokens.get(user_id) != current_jti:
+        return jsonify({
+            "error": "Refresh token has been revoked or replaced."
+        }), 401
 
     new_access_token = create_access_token(
-
-        identity=str(user_id)
-
+        identity=user_id
     )
 
+    new_refresh_token = create_refresh_token(
+        identity=user_id
+    )
 
+    new_refresh_token_data = decode_token(
+        new_refresh_token
+    )
+
+    active_refresh_tokens[user_id] = (
+        new_refresh_token_data["jti"]
+    )
 
     response = jsonify({
-
-        "message":
-        "Access token refreshed successfully."
-
+        "message": "Tokens refreshed successfully."
     })
 
-
-
     set_access_cookies(
-
         response,
-
         new_access_token
-
     )
 
+    set_refresh_cookies(
+        response,
+        new_refresh_token
+    )
+
+    return response, 200
 
 
-    return response,200
 
+@auth_bp.post("/logout")
+def logout():
+    response = jsonify({
+        "message": "Logout successful."
+    })
 
+    unset_jwt_cookies(response)
 
-
+    return response, 200
 
 @auth_bp.post("/forgot-password")
 def forgot_password():

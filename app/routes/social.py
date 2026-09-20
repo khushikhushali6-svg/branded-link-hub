@@ -94,21 +94,43 @@ def update_social_link(link_id):
     data = request.get_json(silent=True) or {}
 
     if "platform" in data:
-        link.platform = data["platform"]
+        platform = str(data["platform"]).strip()
+
+        if not platform:
+            return jsonify({
+                "error": "Platform cannot be empty."
+            }), 400
+
+        link.platform = platform
 
     if "url" in data:
-        link.url = data["url"]
+        url = str(data["url"]).strip()
+
+        if not url:
+            return jsonify({
+                "error": "URL cannot be empty."
+            }), 400
+
+        link.url = url
 
     if "display_order" in data:
         link.display_order = data["display_order"]
 
     if "is_visible" in data:
-        link.is_visible = data["is_visible"]
+        link.is_visible = bool(data["is_visible"])
 
     db.session.commit()
+    db.session.refresh(link)
 
     return jsonify({
-        "message": "Social link updated successfully."
+        "message": "Social link updated successfully.",
+        "social_link": {
+            "id": link.id,
+            "platform": link.platform,
+            "url": link.url,
+            "display_order": link.display_order,
+            "is_visible": link.is_visible
+        }
     }), 200
 
 

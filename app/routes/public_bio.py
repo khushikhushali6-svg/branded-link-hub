@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, render_template
 
 from app.models import User
 
@@ -38,21 +38,18 @@ def public_profile(username):
     ]
 
     links = [
-        {
-            "title": link.title,
-            "url": f"/{link.get_slug()}"
-        }
+        {"title": link.title, "url": f"/r/{link.get_slug()}"}
         for link in user.links
         if link.is_active
     ]
-
-    return jsonify({
-        "profile": {
+    return render_template(
+        "bio.html",
+        profile={
             "display_name": profile.display_name,
             "bio": profile.bio,
             "avatar_url": profile.avatar_url,
             "theme": profile.theme
         },
-        "social_links": social_links,
-        "links": links
-    }), 200
+        social_links=social_links,
+        links=links
+    )
